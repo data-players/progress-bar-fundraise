@@ -1,6 +1,9 @@
 // DOM Elements
 const circles = document.querySelectorAll(".circle"),
-progressBar = document.querySelector(".indicator"),
+progressBar0 = document.querySelector(".progress-bar.step0 .indicator"),
+progressBar1 = document.querySelector(".progress-bar.step1 .indicator"),
+progressBar2 = document.querySelector(".progress-bar.step2 .indicator"),
+
 buttons = document.querySelectorAll("button");
 
 //  variables
@@ -8,80 +11,69 @@ let currentStep = 0;
 let ttlInvestment = 0;
 
 // grappe api to retrieve the ttl investment made
-const apiUrl = "https://grappe.io/data/api/654a566e8ee5dff40e3348d1-investment-ttl";
+const apiParticipationTitles = "https://grappe.io/data/api/654a566e8ee5dff40e3348d1-investment-ttl";
+const apiShares = "https://grappe.io/data/api/654b9bf98ee5dff40e3366ad-investment-ttl-shares";
 
-// retrieves the value of the ttl investment made 
-async function getValueInvestment() {
-    let response = await fetch(apiUrl);
+// retrieves the value of the investment made 
+async function getApiValue(url) {
+    let response = await fetch(url);
     let data = await response.json();
     return data;
 }
 
-getValueInvestment().then(data => {
-    console.log(parseInt(data));
-    ttlInvestment = 5000;
-    console.log("ttlinvestement : "+ttlInvestment);
+// gets the 2 values given by the api and adds them
+async function getFinalValue(){
+    const participationTitlesValue = await getApiValue(apiParticipationTitles);
+    const sharesValue = await getApiValue(apiShares);
+    if(participationTitlesValue){
+        ttlInvestment += parseInt(participationTitlesValue);
+        // console.log("participationTitlesValue : "+participationTitlesValue);
+    }
+    if(sharesValue){
+        ttlInvestment += parseInt(sharesValue);
+        // console.log("sharesValue : "+sharesValue);
+    }
+    // console.log("ttlinvestement : "+ttlInvestment);
+    return ttlInvestment;
+}
+
+getFinalValue().then(data => {
+    // console.log("final value : ",parseInt(data));
+    ttlInvestment = parseInt(data);
 
    if(ttlInvestment >= 30000){
     currentStep = 3;
+    const progressBarWidth2 = (((ttlInvestment - 30000) * 100) / 10000) + 100;
+    // console.log("progressBarWidth : "+progressBarWidth2);
+    progressBar0.style.width = "100%";
+    progressBar1.style.width = "100%";
+    progressBar2.style.width = "100%";
+    progressBar2.style.width = `${progressBarWidth2}%`;
    } else if(ttlInvestment >= 20000){
     currentStep = 2;
+    const progressBarWidth1 = ((ttlInvestment - 20000) * 100) / 10000;
+    // console.log("progressBarWidth : "+progressBarWidth1);
+    progressBar0.style.width = "100%";
+    progressBar1.style.width = "100%";
+    progressBar2.style.width = `${progressBarWidth1}%`;
    } else if(ttlInvestment >= 10000){
     currentStep = 1;
+    const progressBarWidth0 = ((ttlInvestment - 10000) * 100) / 10000;
+    // console.log("progressBarWidth : "+progressBarWidth0);
+    progressBar0.style.width = "100%";
+    progressBar1.style.width = `${progressBarWidth0}%`;
+   } else if(ttlInvestment >= 0){
+    const progressBarWidth0 = (ttlInvestment * 100) / 10000;
+    // console.log("progressBarWidth : "+progressBarWidth0);
+    progressBar0.style.width = `${progressBarWidth0}%`;
    }
 
-    console.log("currentstep : ",currentStep);
+    // console.log("currentstep : ",currentStep);
 
     circles.forEach((circle, index) => {
-        console.log('index : ',index);
-        console.log('circle : ',circle);
+        // console.log('index : ',index);
+        // console.log('circle : ',circle);
         circle.classList[`${index <= currentStep ? "add" : "remove"}`]("active");
     });
 
-
-    const progressBarWidth = (ttlInvestment * 100) / 30000;
-    console.log("progressBarWidth : "+progressBarWidth);
-    //progressBar.style.width = 
-    progressBar.style.width = `${progressBarWidth}%`;
-
-    // loop through all circles and add/remove "active" class based on their index and current step
-    // circles.forEach((circle, index) => {
-    //     console.log('index : ',index);
-    //     console.log('circle : ',circle);
-    //     circle.classList[`${index < currentStep ? "add" : "remove"}`]("active");
-    // });
-
-
-
 });
-
-
-
-
-// function that updates the current step and updates the DOM
-// const updateSteps = (e) => {
-//  // update current step based on the button clicked
-//  //currentStep = e.target.id === "next" ? ++currentStep : --currentStep;
-
-//  // loop through all circles and add/remove "active" class based on their index and current step
-//  circles.forEach((circle, index) => {
-//    circle.classList[`${index < currentStep ? "add" : "remove"}`]("active");
-//  });
-
-//  // update progress bar width based on current step
-
-// //  
-//  // check if current step is last step or first step and disable corresponding buttons
-// //  if (currentStep === circles.length) {
-// //    buttons[1].disabled = true;
-// //  } else if (currentStep === 1) {
-// //    buttons[0].disabled = true;
-// //  } else {
-// //    buttons.forEach((button) => (button.disabled = false));
-// //  }
-// };
-
-// add click event listeners to all buttons
-// buttons.forEach((button) => {
-//  button.addEventListener("click", updateSteps);
-// });
