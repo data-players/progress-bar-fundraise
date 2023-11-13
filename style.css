@@ -1,5 +1,12 @@
 /* Import Google font - Poppins */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+
+:root {
+  --circle-size: 35px;
+  --main-bg-color: #29abe2;
+  --progress-bar-size: 32.5%;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -31,8 +38,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 50px;
-  width: 50px;
+  height: var(--circle-size);
+  width: var(--circle-size);
   color: #999;
   font-size: 22px;
   font-weight: 500;
@@ -44,33 +51,33 @@ body {
 }
 .steps .circle.active {
   transition-delay: 100ms;
-  border-color: #4070f4;
-  color: #4070f4;
+  border-color: var(--main-bg-color);
+  color: var(--main-bg-color);
 }
 .steps .progress-bar {
   position: absolute;
   height: 4px;
-  width: 21%;
+  width: var(--progress-bar-size);
   background: #e0e0e0;
   z-index: -1;
 }
 
-.progress-bar.step0 {
-  margin-left: 50px;
-}
-
 .progress-bar.step1 {
-  margin-left: 40%;
+  margin-left: var(--progress-bar-size);
 }
 
 .progress-bar.step2 {
-  margin-left: 70%;
+  margin-left: calc(var(--progress-bar-size)*2);
 }
 
 .progress-bar .indicator {
   position: absolute;
   height: 100%;
   width: 0%;
-  background: #4070f4;
+  background: var(--main-bg-color);
   transition: all 300ms ease;
+}
+
+.progress-bar.step0 .indicator {
+  margin-left: calc(var(--circle-size)/2);
 }

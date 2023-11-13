@@ -13,7 +13,8 @@ Iframe
 ```
 
 ### A faire ->
-- au delà de 30k, pb de css ! 
+- au delà de 30k, pb de css ! (faire 4ème barre)
+- gérer tailles d'écran pour moitié de valeur barre
 
 ### Remarques 
 - PAs de contrôle des addresses dans le formulaire des parts sociales (on peut dire qu'on habite à Paris avec un code postal 66666 auto-complétion du formulaire pour les adresses = payant)
