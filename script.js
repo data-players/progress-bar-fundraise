@@ -2,44 +2,56 @@
 const circles = document.querySelectorAll(".circle"),
 progressBar0 = document.querySelector(".progress-bar.step0 .indicator"),
 progressBar1 = document.querySelector(".progress-bar.step1 .indicator"),
-progressBar2 = document.querySelector(".progress-bar.step2 .indicator"),
-
-buttons = document.querySelectorAll("button");
+progressBar2 = document.querySelector(".progress-bar.step2 .indicator");
 
 //  variables
-let currentStep = 0;
-let ttlInvestment = 0;
+let [currentStep , ttlInvestment , nberShares , nberInvestmentTitles ,nberShareholders] = [0,0,0,0,0];
 
 // grappe api to retrieve the ttl investment made
-const apiParticipationTitles = "https://grappe.io/data/api/654a566e8ee5dff40e3348d1-investment-ttl";
-const apiShares = "https://grappe.io/data/api/654b9bf98ee5dff40e3366ad-investment-ttl-shares";
+const participationTitlesTable = "https://api.baserow.io/api/database/rows/table/215680/";
+const sharesTable = "https://api.baserow.io/api/database/rows/table/215961/";
+const tokenAPI = "Token GeASQX3FCdmiQUicE7CWWTo7DSkVcvXb";
 
-// retrieves the value of the investment made 
-async function getApiValue(url) {
-    let response = await fetch(url);
-    let data = await response.json();
-    return data;
-}
+// Example POST method implementation:
+async function getDatafromAPI(url = "") {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": tokenAPI,
+      },
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+  }
 
 // gets the 2 values given by the api and adds them
-async function getFinalValue(){
-    const participationTitlesValue = await getApiValue(apiParticipationTitles);
-    const sharesValue = await getApiValue(apiShares);
-    if(participationTitlesValue){
-        ttlInvestment += parseInt(participationTitlesValue);
-        // console.log("participationTitlesValue : "+participationTitlesValue);
-    }
-    if(sharesValue){
-        ttlInvestment += parseInt(sharesValue);
-        // console.log("sharesValue : "+sharesValue);
-    }
-    // console.log("ttlinvestement : "+ttlInvestment);
-    return ttlInvestment;
+async function getData(){
+    const sharesTableData = await getDatafromAPI(sharesTable);
+    const participationTitlesData = await getDatafromAPI(participationTitlesTable);
+
+    // ttl amount of investments in € for the titles and the shares (2500€ for example)
+    const ttlInvestmentShares = sharesTableData.results.reduce((acc,obj) => acc + parseInt(obj.field_1497659), 0);
+    const ttlInvestmentTitles = participationTitlesData.results.reduce((acc, obj) => acc + parseInt(obj.field_1497647), 0);
+
+    // ttl amount of investments in € for the titles + the shares (4500€ for example)
+    ttlInvestment = parseInt(ttlInvestmentTitles) + parseInt(ttlInvestmentShares);
+
+    // nber of shares or titles sold (5 for example)
+    nberShares = sharesTableData.results.reduce((acc, obj) => acc + parseInt(obj.field_1497657), 0);
+    nberInvestmentTitles = participationTitlesData.results.reduce((acc, obj) => acc + parseInt(obj.field_1497638), 0);
+    nberShareholders = sharesTableData.results.length;
+
+    // console.log("test shares table : ",sharesTableData);
+    // console.log("test participation table : ",participationTitlesData);
+    console.log("ttlInvestment : " + ttlInvestment);
+    console.log("nbershares : "+nberShares);
+    console.log("nberinvestment : "+nberInvestmentTitles);
+    console.log("nberShareholders : "+nberShareholders);
 }
 
-getFinalValue().then(data => {
-    // console.log("final value : ",parseInt(data));
-    ttlInvestment = parseInt(data);
+getData().then(() => {
+    // ttlInvestment = 5000;
 
    if(ttlInvestment >= 30000){
     currentStep = 3;
