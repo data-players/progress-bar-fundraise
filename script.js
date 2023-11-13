@@ -2,7 +2,10 @@
 const circles = document.querySelectorAll(".circle"),
 progressBar0 = document.querySelector(".progress-bar.step0 .indicator"),
 progressBar1 = document.querySelector(".progress-bar.step1 .indicator"),
-progressBar2 = document.querySelector(".progress-bar.step2 .indicator");
+progressBar2 = document.querySelector(".progress-bar.step2 .indicator"),
+ttlInvestmentSpan = document.querySelector(".ttlInvestment"),
+nberInvestmentTitlesSpan = document.querySelector(".nberInvestmentTitles"),
+nberSharesSpan = document.querySelector(".nberShares");
 
 //  variables
 let [currentStep , ttlInvestment , nberShares , nberInvestmentTitles ,nberShareholders] = [0,0,0,0,0];
@@ -44,15 +47,20 @@ async function getData(){
 
     // console.log("test shares table : ",sharesTableData);
     // console.log("test participation table : ",participationTitlesData);
-    console.log("ttlInvestment : " + ttlInvestment);
-    console.log("nbershares : "+nberShares);
-    console.log("nberinvestment : "+nberInvestmentTitles);
-    console.log("nberShareholders : "+nberShareholders);
+    // console.log("ttlInvestment : " + ttlInvestment);
+    // console.log("nbershares : "+nberShares);
+    // console.log("nberinvestment : "+nberInvestmentTitles);
+    // console.log("nberShareholders : "+nberShares);
 }
 
 getData().then(() => {
-    // ttlInvestment = 5000;
 
+    // sets text in css elements
+    ttlInvestmentSpan.textContent = ttlInvestment + "€";
+    nberInvestmentTitlesSpan.textContent = nberInvestmentTitles + " titres participatifs";
+    nberSharesSpan.textContent = nberShareholders + " parts sociales";
+
+    // code for the progress bar
    if(ttlInvestment >= 30000){
     currentStep = 3;
     const progressBarWidth2 = (((ttlInvestment - 30000) * 100) / 10000) + 100;
