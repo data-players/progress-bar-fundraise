@@ -5,7 +5,8 @@ progressBar1 = document.querySelector(".progress-bar.step1 .indicator"),
 progressBar2 = document.querySelector(".progress-bar.step2 .indicator"),
 ttlInvestmentSpan = document.querySelector(".ttlInvestment"),
 nberInvestmentTitlesSpan = document.querySelector(".nberInvestmentTitles"),
-nberSharesSpan = document.querySelector(".nberShares");
+nberSharesSpan = document.querySelector(".nberShares"),
+nberShareholdersSpan = document.querySelector(".nberShareholders");
 
 //  variables
 let [currentStep , ttlInvestment , nberShares , nberInvestmentTitles ,nberShareholders] = [0,0,0,0,0];
@@ -35,7 +36,7 @@ async function getData(){
     ttlInvestment = parseInt(ttlInvestmentTitles) + parseInt(ttlInvestmentShares);
 
     // nber of shares or titles sold (5 for example)
-    nberShares = fetchedData?.nber_shares_ ?? 0;
+    nberShares = fetchedData?.nber_shares ?? 0;
     nberInvestmentTitles = fetchedData?.nber_participation_titles ?? 0;
     nberShareholders = fetchedData?.nber_shareholders ?? 0;
 
@@ -49,8 +50,9 @@ getData().then(() => {
 
     // sets text in css elements
     ttlInvestmentSpan.textContent = ttlInvestment + "€";
+    nberSharesSpan.textContent = nberShares + " parts sociales";
+    nberShareholdersSpan.textContent = nberShareholders + " sociétaires";
     nberInvestmentTitlesSpan.textContent = nberInvestmentTitles + " titres participatifs";
-    nberSharesSpan.textContent = nberShareholders + " parts sociales";
 
     // code for the progress bar
    if(ttlInvestment >= 30000){
