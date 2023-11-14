@@ -11,46 +11,38 @@ nberSharesSpan = document.querySelector(".nberShares");
 let [currentStep , ttlInvestment , nberShares , nberInvestmentTitles ,nberShareholders] = [0,0,0,0,0];
 
 // grappe api to retrieve the ttl investment made
-const participationTitlesTable = "https://api.baserow.io/api/database/rows/table/215680/";
-const sharesTable = "https://api.baserow.io/api/database/rows/table/215961/";
-const tokenAPI = "Token GeASQX3FCdmiQUicE7CWWTo7DSkVcvXb";
+const apiGrappe = "https://grappe.io/data/api/655353ca8ee5dff40e344aa3-progress-bar-data";
 
 // Example POST method implementation:
 async function getDatafromAPI(url = "") {
-    // Default options are marked with *
     const response = await fetch(url, {
-      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": tokenAPI,
+        "Content-Type": "application/json"
       },
     });
-    return response.json(); // parses JSON response into native JavaScript objects
+    return response.json(); 
   }
 
 // gets the 2 values given by the api and adds them
 async function getData(){
-    const sharesTableData = await getDatafromAPI(sharesTable);
-    const participationTitlesData = await getDatafromAPI(participationTitlesTable);
 
+    const fetchedData = await getDatafromAPI(apiGrappe);
     // ttl amount of investments in € for the titles and the shares (2500€ for example)
-    const ttlInvestmentShares = sharesTableData.results.reduce((acc,obj) => acc + parseInt(obj.field_1497659), 0);
-    const ttlInvestmentTitles = participationTitlesData.results.reduce((acc, obj) => acc + parseInt(obj.field_1497647), 0);
-
+    const ttlInvestmentShares = fetchedData.sum_shares;
+    const ttlInvestmentTitles = fetchedData.sum_participation_titles;
     // ttl amount of investments in € for the titles + the shares (4500€ for example)
     ttlInvestment = parseInt(ttlInvestmentTitles) + parseInt(ttlInvestmentShares);
 
     // nber of shares or titles sold (5 for example)
-    nberShares = sharesTableData.results.reduce((acc, obj) => acc + parseInt(obj.field_1497657), 0);
-    nberInvestmentTitles = participationTitlesData.results.reduce((acc, obj) => acc + parseInt(obj.field_1497638), 0);
-    nberShareholders = sharesTableData.results.length;
+    nberShares = fetchedData?.nber_shares_ ?? 0;
+    nberInvestmentTitles = fetchedData?.nber_participation_titles ?? 0;
+    nberShareholders = fetchedData?.nber_shareholders ?? 0;
 
-    // console.log("test shares table : ",sharesTableData);
-    // console.log("test participation table : ",participationTitlesData);
     // console.log("ttlInvestment : " + ttlInvestment);
     // console.log("nbershares : "+nberShares);
     // console.log("nberinvestment : "+nberInvestmentTitles);
-    // console.log("nberShareholders : "+nberShares);
+    // console.log("nberShareholders : "+nberShareholders);
 }
 
 getData().then(() => {
