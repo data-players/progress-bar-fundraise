@@ -109,5 +109,5 @@ body {
 }
 
 .progress-bar.step0 .indicator {
-  margin-left: 13px;
+  margin-left: calc(var(--circle-size)/2);
 }
